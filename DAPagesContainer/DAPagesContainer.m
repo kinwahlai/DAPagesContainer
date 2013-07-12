@@ -13,7 +13,7 @@
 
 
 @interface DAPagesContainer () <DAPagesContainerTopBarDelegate, UIScrollViewDelegate>
-
+@property (strong, nonatomic) NSMutableArray *viewControllers;
 @property (strong, nonatomic) DAPagesContainerTopBar *topBar;
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (weak,   nonatomic) UIScrollView *observingScrollView;
@@ -70,6 +70,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.viewControllers = [NSMutableArray array];
     self.shouldObserveContentOffset = YES;
         
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.,
@@ -213,22 +214,20 @@
     self.topBar.font = font;
 }
 
-- (void)setViewControllers:(NSArray *)viewControllers
+
+- (void)updateViewControllersWithSelectedIndex:(NSUInteger)idx
 {
-    if (_viewControllers != viewControllers) {
-        _viewControllers = viewControllers;
-        self.topBar.itemTitles = [viewControllers valueForKey:@"title"];
-        for (UIViewController *viewController in viewControllers) {
-            [viewController willMoveToParentViewController:self];
-            viewController.view.frame = CGRectMake(0., 0., CGRectGetWidth(self.scrollView.frame), self.scrollHeight);
-            [self.scrollView addSubview:viewController.view];
-            [viewController didMoveToParentViewController:self];
-        }
-        [self layoutSubviews];
-        self.selectedIndex = 0;
-        self.pageIndicatorView.center = CGPointMake([self.topBar centerForSelectedItemAtIndex:self.selectedIndex].x,
-                                                    self.pageIndicatorView.center.y);
+    self.topBar.itemTitles = [self.viewControllers valueForKey:@"title"];
+    for (UIViewController *viewController in self.viewControllers) {
+        [viewController willMoveToParentViewController:self];
+        viewController.view.frame = CGRectMake(0., 0., CGRectGetWidth(self.scrollView.frame), self.scrollHeight);
+        [self.scrollView addSubview:viewController.view];
+        [viewController didMoveToParentViewController:self];
     }
+    [self layoutSubviews];
+    self.selectedIndex = idx;
+    self.pageIndicatorView.center = CGPointMake([self.topBar centerForSelectedItemAtIndex:self.selectedIndex].x,
+                                                self.pageIndicatorView.center.y);
 }
 
 #pragma mark - Private
@@ -349,6 +348,20 @@
             }
         }
     }
+}
+
+#pragma mark -
+#pragma mark Customized method
+-(void)addViewController:(id)vc
+{
+    [self.viewControllers addObject:vc];
+    [self updateViewControllersWithSelectedIndex:(self.viewControllers.count - 1)];
+}
+
+-(void)removeViewControllerAtIndex:(NSInteger)idx
+{
+    [self.viewControllers removeObjectAtIndex:idx];
+    [self updateViewControllersWithSelectedIndex:(self.viewControllers.count - 1)];
 }
 
 @end

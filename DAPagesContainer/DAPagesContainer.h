@@ -11,7 +11,6 @@
 
 @interface DAPagesContainer : UIViewController
 
-@property (strong, nonatomic) NSArray *viewControllers;
 @property (assign, nonatomic) NSUInteger selectedIndex;
 
 @property (assign, nonatomic) NSUInteger topBarHeight;
@@ -24,4 +23,6 @@
 - (void)setSelectedIndex:(NSUInteger)selectedIndex animated:(BOOL)animated;
 - (void)updateLayoutForNewOrientation:(UIInterfaceOrientation)orientation;
 
+-(void)addViewController:(id)vc;
+-(void)removeViewControllerAtIndex:(NSInteger)idx;
 @end
