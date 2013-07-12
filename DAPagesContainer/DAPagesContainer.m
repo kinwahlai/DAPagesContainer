@@ -215,7 +215,7 @@
 }
 
 
-- (void)updateViewControllersWithSelectedIndex:(NSUInteger)idx
+- (void)updateViewControllers
 {
     self.topBar.itemTitles = [self.viewControllers valueForKey:@"title"];
     for (UIViewController *viewController in self.viewControllers) {
@@ -225,7 +225,6 @@
         [viewController didMoveToParentViewController:self];
     }
     [self layoutSubviews];
-    self.selectedIndex = idx;
     self.pageIndicatorView.center = CGPointMake([self.topBar centerForSelectedItemAtIndex:self.selectedIndex].x,
                                                 self.pageIndicatorView.center.y);
 }
@@ -355,13 +354,24 @@
 -(void)addViewController:(id)vc
 {
     [self.viewControllers addObject:vc];
-    [self updateViewControllersWithSelectedIndex:(self.viewControllers.count - 1)];
+    _selectedIndex = 0;
+    [self updateViewControllers];
+    [self setSelectedIndex:(self.viewControllersCount - 1) animated:YES];
 }
 
 -(void)removeViewControllerAtIndex:(NSInteger)idx
 {
+    NSInteger oldSelectedIndex = self.selectedIndex;
     [self.viewControllers removeObjectAtIndex:idx];
-    [self updateViewControllersWithSelectedIndex:(self.viewControllers.count - 1)];
+    _selectedIndex = 0;
+    [self updateViewControllers];
+    NSInteger newSelectedIndex = ((oldSelectedIndex - 1) < self.viewControllersCount && (oldSelectedIndex - 1) > 0)? (oldSelectedIndex - 1) : 0;
+    [self setSelectedIndex:newSelectedIndex animated:YES];
+}
+
+-(NSInteger)viewControllersCount
+{
+    return self.viewControllers.count;
 }
 
 @end

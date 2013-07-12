@@ -12,7 +12,7 @@
 @interface DAPagesContainer : UIViewController
 
 @property (assign, nonatomic) NSUInteger selectedIndex;
-
+@property (readonly) NSInteger viewControllersCount;
 @property (assign, nonatomic) NSUInteger topBarHeight;
 @property (assign, nonatomic) CGSize pageIndicatorViewSize;
 @property (strong, nonatomic) UIColor *topBarBackgroundColor;
