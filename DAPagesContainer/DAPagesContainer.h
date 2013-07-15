@@ -10,7 +10,7 @@
 
 
 @interface DAPagesContainer : UIViewController
-
+@property (readonly) NSMutableArray *viewControllers;
 @property (assign, nonatomic) NSUInteger selectedIndex;
 @property (readonly) NSInteger viewControllersCount;
 @property (assign, nonatomic) NSUInteger topBarHeight;
